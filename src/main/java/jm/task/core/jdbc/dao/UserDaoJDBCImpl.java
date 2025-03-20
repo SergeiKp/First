@@ -44,75 +44,117 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        try (Connection connection = Util.getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate(sqlCreate);
-            System.out.println("Таблица users создана");
+        try (Connection connection = Util.getConnection()) {
+            connection.setAutoCommit(false);
+
+            try (Statement statement = connection.createStatement()) {
+                statement.executeUpdate(sqlCreate);
+                connection.commit();
+                System.out.println("Таблица users создана");
+            } catch (SQLException e) {
+                connection.rollback();
+                System.out.println("Ошибка при создании таблицы: " + e.getMessage());
+            }
         } catch (SQLException e) {
-            System.out.println("Ошибка при создании таблицы" + e);
+            System.out.println("Ошибка при установлении соединения: " + e.getMessage());
         }
     }
 
     public void dropUsersTable() {
-        try (Connection connection = Util.getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate(sqlDrop);
+        try (Connection connection = Util.getConnection()) {
+            connection.setAutoCommit(false);
+            try (Statement statement = connection.createStatement()) {
+                statement.executeUpdate(sqlDrop);
+                connection.commit();
 
+            } catch (SQLException e) {
+                connection.rollback();
+                System.out.println("Ошибка при удалении таблицы" + e);
+            }
         } catch (SQLException e) {
-            System.out.println("Ошибка при удалении таблицы" + e);
+            System.out.println("Ошибка при подключении к БД: " + e.getMessage());
         }
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        try (Connection connection = Util.getConnection();
-             PreparedStatement prStatement = connection.prepareStatement(sqlSave)) {
-            prStatement.setString(1, name);
-            prStatement.setString(2, lastName);
-            prStatement.setByte(3, age);
-            prStatement.executeUpdate();
-            System.out.println("User с именем — " + name + " добавлен в базу данных");
+        try (Connection connection = Util.getConnection()) {
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement prStatement = connection.prepareStatement(sqlSave)) {
+                prStatement.setString(1, name);
+                prStatement.setString(2, lastName);
+                prStatement.setByte(3, age);
+                prStatement.executeUpdate();
+
+                connection.commit();
+                System.out.println("User с именем — " + name + " добавлен в базу данных");
+
+            } catch (SQLException e) {
+                connection.rollback();
+                System.out.println("Ошибка при добавлении пользователя: " + e.getMessage());
+            }
         } catch (SQLException e) {
-            System.out.println("Ошибка при добавлении пользователя: " + e.getMessage());
+            System.out.println("Ошибка при установлении соединения: " + e.getMessage());
         }
     }
 
     public void removeUserById(long id) {
-        try (Connection connection = Util.getConnection();
-             PreparedStatement prStatement = connection.prepareStatement(sqlDelete)) {
-            prStatement.setLong(1, id);
-            prStatement.executeUpdate();
+        try (Connection connection = Util.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement prStatement = connection.prepareStatement(sqlDelete)) {
+                prStatement.setLong(1, id);
+                prStatement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                System.out.println("Ошибка при удалении пользователя: " + e.getMessage());
+            }
         } catch (SQLException e) {
-            System.out.println("Ошибка при удалении пользователя: " + e.getMessage());
+            System.out.println("Ошибка при подключении к БД: " + e.getMessage());
         }
     }
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        try (Connection connection = Util.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sqlSelect)) {
-            while (resultSet.next()) {
-                User user = new User(
+        try (Connection connection = Util.getConnection()) {
+            connection.setAutoCommit(false);
 
-                        resultSet.getString("name"),
-                        resultSet.getString("lastName"),
-                        resultSet.getByte("age")
-                );
-                users.add(user);
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(sqlSelect)) {
+
+                while (resultSet.next()) {
+                    User user = new User(
+                            resultSet.getString("name"),
+                            resultSet.getString("lastName"),
+                            resultSet.getByte("age")
+                    );
+                    users.add(user);
+                }
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                System.out.println("Ошибка при получении пользователей: " + e.getMessage());
             }
         } catch (SQLException e) {
-            System.out.println("Ошибка при получении пользователей: " + e.getMessage());
+            System.out.println("Ошибка при подключении к БД: " + e.getMessage());
         }
         return users;
     }
 
-    public void cleanUsersTable() {
-        try (Connection connection = Util.getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate(sqlClean);
 
+    public void cleanUsersTable() {
+        try (Connection connection = Util.getConnection()) {
+            connection.setAutoCommit(false);
+            try (Statement statement = connection.createStatement()) {
+                statement.executeUpdate(sqlClean);
+                connection.commit();
+                System.out.println("Таблица users очищена");
+            } catch (SQLException e) {
+                connection.rollback();
+                System.out.println("Ошибка при очистке таблицы: " + e.getMessage());
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Ошибка при подключении к БД: " + e.getMessage());
         }
     }
 }
