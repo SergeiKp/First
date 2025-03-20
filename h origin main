@@ -1,0 +1,23 @@
+[33mcommit 7614adb58e77543b67db888696c798f70252cdcf[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Sergei Potapov <Potapov1995@bk.ru>
+Date:   Thu Mar 20 17:39:48 2025 +0300
+
+    delete file .idea,target / task fix
+
+[33mcommit e95beca581d95a6f8ef00c1bdf0fe65cc4e20e12[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: Sergei Potapov <Potapov1995@bk.ru>
+Date:   Wed Mar 19 23:07:52 2025 +0300
+
+    second task complete
+
+[33mcommit 411e0c24ac473952d9bf74783a532b9fd4fe645e[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Bolotov Alexander <distalker1@gmail.com>
+Date:   Mon Jan 17 13:52:50 2022 +0300
+
+    pom fix
+
+[33mcommit 2c048dffcff1120b505d83e62c8b3672c1155f8c[m
+Author: nikitanesterenkos@gmail.com <piramida741147>
+Date:   Wed Jun 10 14:42:16 2020 +0300
+
+    Initial commit
